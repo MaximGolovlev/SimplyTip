@@ -42,15 +42,16 @@ final class TipCalculatorViewModel: ObservableObject {
         }
         .store(in: &cancellables)
         
-        Publishers.CombineLatest4(
+        combineLatest5(
             $billAmount,
             $tipPercentage,
             $splitBillEnabled,
-            $numberOfPeople
+            $numberOfPeople,
+            settingsManager.$roundToNearest
         )
         .debounce(for: .seconds(0.1), scheduler: RunLoop.main)
-        .sink { [weak self] bill, tip, isSplit, people in
-            self?.calculateTips(billAmount: bill, tipPercentage: tip, isSplit: isSplit, numberOfPeople: people)
+        .sink { [weak self] bill, tip, isSplit, people, round in
+            self?.calculateTips(billAmount: bill, tipPercentage: tip, isSplit: isSplit, numberOfPeople: people, round: round)
         }
         .store(in: &cancellables)
     }
@@ -59,7 +60,7 @@ final class TipCalculatorViewModel: ObservableObject {
         tipPercentage = settingsManager.defaultTipPercentage
     }
     
-    private func calculateTips(billAmount: String, tipPercentage: Double, isSplit: Bool, numberOfPeople: Int) {
+    private func calculateTips(billAmount: String, tipPercentage: Double, isSplit: Bool, numberOfPeople: Int, round: Bool) {
         guard let bill = Double(billAmount), bill > 0 else {
             resetCalculations()
             return
@@ -69,7 +70,7 @@ final class TipCalculatorViewModel: ObservableObject {
         var calculatedTotal = bill + calculatedTip
         
         // Округление если включено
-        if settingsManager.roundToNearest {
+        if round {
             calculatedTotal = calculatedTotal.rounded()
             calculatedTip = calculatedTotal - bill
         }

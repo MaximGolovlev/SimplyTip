@@ -56,7 +56,13 @@ final class SettingsManager: ObservableObject {
         }
         
         roundToNearest = defaults.bool(forKey: roundToNearestKey)
-        splitBillEnabled = defaults.bool(forKey: splitBillKey)
+        
+        if defaults.object(forKey: splitBillKey) == nil {
+            splitBillEnabled = true
+        } else {
+            splitBillEnabled = defaults.bool(forKey: splitBillKey)
+        }
+        
         selectedCurrency = defaults.string(forKey: currencyKey) ?? Locale.current.currency?.identifier ?? "USD"
     }
     

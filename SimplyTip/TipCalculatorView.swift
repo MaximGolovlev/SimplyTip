@@ -83,8 +83,38 @@ struct TipCalculatorView: View {
                     .padding(8)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
+                    .onChange(of: viewModel.billAmount) { oldValue, newValue in
+                        // Фильтруем ввод - только цифры и одна точка
+                        viewModel.billAmount = filterDecimalInput(newValue)
+                    }
             }
         }
+    }
+    
+    private func filterDecimalInput(_ input: String) -> String {
+        var filtered = input.filter { "0123456789.,".contains($0) }
+        
+        // Заменяем запятые на точки
+        filtered = filtered.replacingOccurrences(of: ",", with: ".")
+        
+        // Убеждаемся, что есть только одна точка
+        let components = filtered.split(separator: ".", omittingEmptySubsequences: false)
+        if components.count > 2 {
+            // Если больше одной точки, оставляем только первую
+            let firstPart = String(components[0])
+            let secondPart = components.dropFirst().joined(separator: "")
+            filtered = firstPart + "." + secondPart
+        }
+        
+        // Ограничиваем двумя знаками после запятой
+        if let dotIndex = filtered.firstIndex(of: ".") {
+            let decimalPart = filtered[filtered.index(after: dotIndex)...]
+            if decimalPart.count > 2 {
+                filtered = String(filtered.prefix(upTo: filtered.index(dotIndex, offsetBy: 3)))
+            }
+        }
+        
+        return filtered
     }
     
     private var tipPercentageSection: some View {
