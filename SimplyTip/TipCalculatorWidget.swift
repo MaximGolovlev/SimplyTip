@@ -48,6 +48,7 @@ struct SimpleEntry: TimelineEntry {
 struct WidgetView: View {
     var entry: Provider.Entry
     @Environment(\.widgetFamily) var family
+    @EnvironmentObject private var settingsManager: SettingsManager
     
     var body: some View {
         ZStack {
@@ -81,10 +82,9 @@ struct WidgetView: View {
     }
     
     private func formatCurrency(_ amount: Double) -> String {
-        let settings = SettingsManager.shared
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencySymbol = settings.getCurrencySymbol()
+        formatter.currencySymbol = settingsManager.getCurrencySymbol()
         return formatter.string(from: NSNumber(value: amount)) ?? "\(amount)"
     }
 }

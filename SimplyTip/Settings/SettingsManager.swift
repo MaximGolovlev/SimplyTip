@@ -9,7 +9,6 @@
 import Foundation
 
 final class SettingsManager: ObservableObject {
-    static let shared = SettingsManager()
     
     @Published var defaultTipPercentage: Double = 15.0 {
         didSet {
@@ -45,7 +44,7 @@ final class SettingsManager: ObservableObject {
         "RUB", "BRL", "INR", "MXN", "KRW", "TRY", "SEK", "NOK"
     ]
     
-    private init() {
+    init() {
         loadSettings()
     }
     

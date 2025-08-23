@@ -11,7 +11,7 @@ import SwiftUI
 struct CurrencyPicker: View {
     @Binding var selectedCurrency: String
     let currencies: [String]
-    @StateObject private var colorManager = ColorSchemeManager.shared
+    @EnvironmentObject var colorManager: ColorSchemeManager
     
     var body: some View {
         Picker("Currency", selection: $selectedCurrency) {

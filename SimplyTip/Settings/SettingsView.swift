@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var settingsManager = SettingsManager.shared
-    @StateObject private var colorManager = ColorSchemeManager.shared
+    @EnvironmentObject private var settingsManager: SettingsManager
+    @EnvironmentObject private var colorManager: ColorSchemeManager
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {

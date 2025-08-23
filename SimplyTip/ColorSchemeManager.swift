@@ -9,7 +9,6 @@
 import SwiftUI
 
 final class ColorSchemeManager: ObservableObject {
-    static let shared = ColorSchemeManager()
     
     @Published var primaryColor: Color = .green
     @Published var secondaryColor: Color = .white
@@ -25,7 +24,7 @@ final class ColorSchemeManager: ObservableObject {
         endPoint: .bottomTrailing
     )
     
-    private init() {
+    init() {
         setupNeonBlueScheme()
     }
     

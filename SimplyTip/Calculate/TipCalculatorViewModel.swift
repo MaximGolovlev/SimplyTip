@@ -7,6 +7,7 @@
 
 
 import Foundation
+import SwiftUI
 import Combine
 
 final class TipCalculatorViewModel: ObservableObject {
@@ -20,21 +21,21 @@ final class TipCalculatorViewModel: ObservableObject {
     @Published var amountPerPerson: Double = 0.0
     
     private var cancellables = Set<AnyCancellable>()
-    private let settingsManager = SettingsManager.shared
+    var settingsManager: SettingsManager!
     
-    init() {
+    func update(settingsManager: SettingsManager) {
+        self.settingsManager = settingsManager
         setupBindings()
-        loadUserPreferences()
     }
     
     private func setupBindings() {
         
         // Следим за изменениями настроек
-        settingsManager.$defaultTipPercentage
-        .sink { [weak self] new in
-            self?.tipPercentage = new
-        }
-        .store(in: &cancellables)
+//        settingsManager.$defaultTipPercentage
+//        .sink { [weak self] new in
+//            self?.tipPercentage = new
+//        }
+//        .store(in: &cancellables)
         
         settingsManager.$splitBillEnabled
         .sink { [weak self] new in
@@ -44,7 +45,7 @@ final class TipCalculatorViewModel: ObservableObject {
         
         combineLatest5(
             $billAmount,
-            $tipPercentage,
+            settingsManager.$defaultTipPercentage,
             $splitBillEnabled,
             $numberOfPeople,
             settingsManager.$roundToNearest
@@ -54,10 +55,6 @@ final class TipCalculatorViewModel: ObservableObject {
             self?.calculateTips(billAmount: bill, tipPercentage: tip, isSplit: isSplit, numberOfPeople: people, round: round)
         }
         .store(in: &cancellables)
-    }
-    
-    private func loadUserPreferences() {
-        tipPercentage = settingsManager.defaultTipPercentage
     }
     
     private func calculateTips(billAmount: String, tipPercentage: Double, isSplit: Bool, numberOfPeople: Int, round: Bool) {
@@ -89,7 +86,6 @@ final class TipCalculatorViewModel: ObservableObject {
     }
     
     func updateTipPercentage(_ percentage: Double) {
-        tipPercentage = percentage
         settingsManager.defaultTipPercentage = percentage
     }
     

@@ -9,8 +9,8 @@ import SwiftUI
 
 @main
 struct SimplyTipApp: App {
-    @StateObject private var colorManager = ColorSchemeManager.shared
-    @StateObject private var settingsManager = SettingsManager.shared
+    var colorManager = ColorSchemeManager()
+    var settingsManager = SettingsManager()
     
     var body: some Scene {
         WindowGroup {
@@ -23,7 +23,7 @@ struct SimplyTipApp: App {
                     SettingsView()
                 }
             }
-            .accentColor(colorManager.primaryColor)
+            .tint(colorManager.primaryColor)
             .environmentObject(colorManager)
             .environmentObject(settingsManager)
             .preferredColorScheme(.dark) // Темная тема по умолчанию

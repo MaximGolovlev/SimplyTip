@@ -10,8 +10,8 @@ import SwiftUI
 
 struct TipCalculatorView: View {
     @StateObject private var viewModel = TipCalculatorViewModel()
-    @StateObject private var colorManager = ColorSchemeManager.shared
-    @StateObject private var settingsManager = SettingsManager.shared
+    @EnvironmentObject private var colorManager: ColorSchemeManager
+    @EnvironmentObject private var settingsManager: SettingsManager
     
     var body: some View {
         NavigationView {
@@ -30,7 +30,7 @@ struct TipCalculatorView: View {
                     tipPercentageSection
                     
                     // Разделение счета
-                    if SettingsManager.shared.splitBillEnabled {
+                    if settingsManager.splitBillEnabled {
                         splitBillSection
                     }
                     
@@ -40,6 +40,9 @@ struct TipCalculatorView: View {
                     Spacer()
                 }
                 .padding()
+            }
+            .onAppear {
+                viewModel.update(settingsManager: settingsManager)
             }
             .onTapGesture {
                 hideKeyboard()
@@ -123,11 +126,11 @@ struct TipCalculatorView: View {
             Divider()
                 .background(colorManager.secondaryColor.opacity(0.3))
             
-            Text("Tip Percentage: \(Int(viewModel.tipPercentage))%")
+            Text("Tip Percentage: \(Int(settingsManager.defaultTipPercentage))%")
                 .font(.headline)
                 .foregroundColor(colorManager.secondaryColor)
             
-            Slider(value: $viewModel.tipPercentage, in: 0...50, step: 1)
+            Slider(value: $settingsManager.defaultTipPercentage, in: 0...50, step: 1)
                 .accentColor(colorManager.primaryColor)
             
             HStack(spacing: 15) {
@@ -142,7 +145,7 @@ struct TipCalculatorView: View {
                             .foregroundColor(colorManager.buttonTextColor)
                             .padding(8)
                             .background(
-                                viewModel.tipPercentage == Double(percentage) ?
+                                settingsManager.defaultTipPercentage == Double(percentage) ?
                                 colorManager.primaryColor : Color.gray.opacity(0.3)
                             )
                             .cornerRadius(8)
