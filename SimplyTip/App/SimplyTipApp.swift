@@ -15,13 +15,15 @@ struct SimplyTipApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                Tab("Calculate", systemImage: "percent") {
-                    TipCalculatorView()
-                }
+                TipCalculatorView()
+                    .tabItem {
+                        Label("Calculate", systemImage: "percent")
+                    }
                 
-                Tab("Sttings", systemImage: "gearshape.fill") {
-                    SettingsView()
-                }
+                SettingsView()
+                    .tabItem {
+                        Label("Sttings", systemImage: "gearshape.fill")
+                    }
             }
             .tint(colorManager.primaryColor)
             .environmentObject(colorManager)

@@ -86,7 +86,7 @@ struct TipCalculatorView: View {
                     .padding(8)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
-                    .onChange(of: viewModel.billAmount) { oldValue, newValue in
+                    .onChange(of: viewModel.billAmount) { newValue in
                         // Фильтруем ввод - только цифры и одна точка
                         viewModel.billAmount = filterDecimalInput(newValue)
                     }
